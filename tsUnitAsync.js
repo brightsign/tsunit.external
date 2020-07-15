@@ -122,7 +122,7 @@ var TestAsync = (function (_super) {
             testRunLimiter = this.testRunLimiter;
         }
         var tests = this.tests;
-        if (testRunLimiter) {
+        if (testRunLimiter != null) {
             tests = tests.filter(function (x) { return testRunLimiter.isTestsGroupActive(x.name); });
         }
         return this.runAll(tests, testRunLimiter);

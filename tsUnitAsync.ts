@@ -107,14 +107,14 @@ export class TestAsync extends Test {
         testClass: TestClass, 
         unitTestName: string, 
         testsGroupName: string, 
-        parameters: any[][] = null, 
-        parameterSetIndex: number = null
+        parameters: any[][] | null = null,
+        parameterSetIndex: number | null = null
     ):Promise<this> {
         // running everything inside .then saves us a try/catch
         return Promise.resolve().then(() => {
             testClass.setUp && testClass.setUp();
             var dynamicTestClass: any = testClass;
-            var args = (parameterSetIndex !== null) ? parameters[parameterSetIndex] : null;
+            var args = (parameterSetIndex !== null) ? parameters![parameterSetIndex] : null;
             return dynamicTestClass[unitTestName].apply(testClass, args);
         }).then(() => {
             this.passes.push(new TestDescription(testsGroupName, unitTestName, parameterSetIndex, 'OK'));
@@ -125,8 +125,8 @@ export class TestAsync extends Test {
         });
     }
 
-    runAsync(testRunLimiter: ITestRunLimiter = null): Promise<this> {
-        var parameters: any[][] = null;
+    runAsync(testRunLimiter: ITestRunLimiter | null = null): Promise<this> {
+        var parameters: any[][] | null = null;
         var testContext = new TestContext();
 
         if (testRunLimiter == null) {
@@ -135,8 +135,8 @@ export class TestAsync extends Test {
 
         var tests = this.tests;
 
-        if (testRunLimiter) {
-            tests = tests.filter((x) => testRunLimiter.isTestsGroupActive(x.name));
+        if (testRunLimiter != null) {
+            tests = tests.filter((x) => testRunLimiter!.isTestsGroupActive(x.name));
         }
 
         return this.runAll(tests, testRunLimiter);
